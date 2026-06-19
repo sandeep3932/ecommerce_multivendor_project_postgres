@@ -1,0 +1,221 @@
+PostgreSQL Database Schema Documentation
+======================================
+
+Table: addresses
+----------------
+  - address_id (integer) [PRIMARY KEY]
+  - user_id (integer) [REFERENCES users(user_id)]
+  - address_line (text)
+  - city (character varying)
+  - state (character varying)
+  - country (character varying)
+  - postal_code (character varying)
+  - address_type (character varying)
+
+
+Table: brands
+-------------
+  - brand_id (integer) [PRIMARY KEY]
+  - brand_name (character varying)
+  - is_verified (boolean)
+
+
+Table: cart
+-----------
+  - cart_id (integer) [PRIMARY KEY]
+  - customer_id (integer) [REFERENCES customer_profiles(customer_id)]
+  - expires_at (timestamp without time zone)
+
+
+Table: cart_items
+-----------------
+  - cart_item_id (integer) [PRIMARY KEY]
+  - cart_id (integer) [REFERENCES cart(cart_id)]
+  - product_id (integer) [REFERENCES products(product_id)]
+  - quantity (integer)
+
+
+Table: categories
+-----------------
+  - category_id (integer) [PRIMARY KEY]
+  - category_name (character varying)
+  - parent_category_id (integer) [REFERENCES categories(category_id)]
+
+
+Table: coupon_usage
+-------------------
+  - usage_id (integer) [PRIMARY KEY]
+  - coupon_id (integer) [REFERENCES coupons(coupon_id)]
+  - customer_id (integer) [REFERENCES customer_profiles(customer_id)]
+  - used_at (timestamp without time zone)
+
+
+Table: coupons
+--------------
+  - coupon_id (integer) [PRIMARY KEY]
+  - coupon_code (character varying)
+  - discount_type (character varying)
+  - discount_value (numeric)
+  - max_uses (integer)
+  - expiry_date (date)
+  - minimum_order_value (numeric)
+
+
+Table: customer_profiles
+------------------------
+  - customer_id (integer) [PRIMARY KEY]
+  - user_id (integer) [REFERENCES users(user_id)]
+  - loyalty_points (integer)
+  - preferred_address (text)
+  - date_of_birth (date)
+
+
+Table: inventory
+----------------
+  - inventory_id (integer) [PRIMARY KEY]
+  - product_id (integer) [REFERENCES products(product_id)]
+  - warehouse_id (integer) [REFERENCES warehouses(warehouse_id)]
+  - quantity_available (integer)
+  - reorder_threshold (integer)
+
+
+Table: invoices
+---------------
+  - invoice_id (integer) [PRIMARY KEY]
+  - order_id (integer) [REFERENCES orders(order_id)]
+  - invoice_date (date)
+  - total_amount (numeric)
+
+
+Table: order_items
+------------------
+  - order_item_id (integer) [PRIMARY KEY]
+  - order_id (integer) [REFERENCES orders(order_id)]
+  - product_id (integer) [REFERENCES products(product_id)]
+  - quantity (integer)
+  - unit_price (numeric)
+
+
+Table: orders
+-------------
+  - order_id (integer) [PRIMARY KEY]
+  - customer_id (integer) [REFERENCES customer_profiles(customer_id)]
+  - order_status (character varying)
+  - total_amount (numeric)
+  - created_at (timestamp without time zone)
+
+
+Table: payment_transactions
+---------------------------
+  - transaction_id (integer) [PRIMARY KEY]
+  - payment_id (integer) [REFERENCES payments(payment_id)]
+  - transaction_status (character varying)
+  - transaction_date (timestamp without time zone)
+
+
+Table: payments
+---------------
+  - payment_id (integer) [PRIMARY KEY]
+  - order_id (integer) [REFERENCES orders(order_id)]
+  - payment_method (character varying)
+  - payment_status (character varying)
+  - gateway (character varying)
+  - amount (numeric)
+  - paid_at (timestamp without time zone)
+
+
+Table: product_categories
+-------------------------
+  - product_id (integer) [PRIMARY KEY] [REFERENCES products(product_id)]
+  - category_id (integer) [PRIMARY KEY] [REFERENCES categories(category_id)]
+
+
+Table: product_images
+---------------------
+  - image_id (integer) [PRIMARY KEY]
+  - product_id (integer) [REFERENCES products(product_id)]
+  - image_url (text)
+  - sort_order (integer)
+  - is_primary (boolean)
+
+
+Table: products
+---------------
+  - product_id (integer) [PRIMARY KEY]
+  - seller_id (integer) [REFERENCES seller_profiles(seller_id)]
+  - brand_id (integer) [REFERENCES brands(brand_id)]
+  - product_name (character varying)
+  - sku (character varying)
+  - slug (character varying)
+  - base_price (numeric)
+  - product_status (character varying)
+  - created_at (timestamp without time zone)
+
+
+Table: refunds
+--------------
+  - refund_id (integer) [PRIMARY KEY]
+  - return_id (integer) [REFERENCES returns(return_id)]
+  - refund_amount (numeric)
+  - refund_method (character varying)
+  - processed_at (timestamp without time zone)
+
+
+Table: returns
+--------------
+  - return_id (integer) [PRIMARY KEY]
+  - order_item_id (integer) [REFERENCES order_items(order_item_id)]
+  - reason_code (character varying)
+  - item_condition (character varying)
+  - returned_at (timestamp without time zone)
+
+
+Table: reviews
+--------------
+  - review_id (integer) [PRIMARY KEY]
+  - customer_id (integer) [REFERENCES customer_profiles(customer_id)]
+  - product_id (integer) [REFERENCES products(product_id)]
+  - title (character varying)
+  - review_body (text)
+  - verified_purchase (boolean)
+  - helpful_votes (integer)
+
+
+Table: seller_profiles
+----------------------
+  - seller_id (integer) [PRIMARY KEY]
+  - user_id (integer) [REFERENCES users(user_id)]
+  - business_name (character varying)
+  - gst_number (character varying)
+  - commission_rate (numeric)
+  - verification_status (boolean)
+
+
+Table: stock_movements
+----------------------
+  - movement_id (integer) [PRIMARY KEY]
+  - product_id (integer) [REFERENCES products(product_id)]
+  - warehouse_id (integer) [REFERENCES warehouses(warehouse_id)]
+  - movement_type (character varying)
+  - quantity (integer)
+  - movement_date (timestamp without time zone)
+
+
+Table: users
+------------
+  - user_id (integer) [PRIMARY KEY]
+  - full_name (character varying)
+  - email (character varying)
+  - password_hash (character varying)
+  - role (character varying)
+  - created_at (timestamp without time zone)
+
+
+Table: warehouses
+-----------------
+  - warehouse_id (integer) [PRIMARY KEY]
+  - warehouse_name (character varying)
+  - city (character varying)
+  - state (character varying)
+  - capacity (integer)
+

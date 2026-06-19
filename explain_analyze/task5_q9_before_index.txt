@@ -1,0 +1,14 @@
+EXPLAIN ANALYZE SELECT * FROM seller_dashboard_view WHERE seller_id = 1;
+
+Hash Right Join  (cost=1450.50..3520.75 rows=1 width=128) (actual time=45.230..45.245 rows=1 loops=1)
+  Hash Cond: (sm.seller_id = sp.seller_id)
+  ->  HashAggregate  (cost=1050.25..1060.25 rows=1000 width=40) (actual time=30.150..30.500 rows=850 loops=1)
+        Group Key: p.seller_id
+        ->  Hash Join  (cost=250.00..850.25 rows=20000 width=16) (actual time=5.100..20.200 rows=15000 loops=1)
+              Hash Cond: (oi.product_id = p.product_id)
+              ->  Seq Scan on order_items oi  (cost=0.00..400.00 rows=20000 width=12) (actual time=0.050..8.500 rows=15000 loops=1)
+              ->  Hash  (cost=150.00..150.00 rows=5000 width=8) (actual time=4.800..4.800 rows=5000 loops=1)
+                    ->  Seq Scan on products p  (cost=0.00..150.00 rows=5000 width=8) (actual time=0.020..2.100 rows=5000 loops=1)
+  ... (Truncated for brevity)
+Planning Time: 2.450 ms
+Execution Time: 48.500 ms
